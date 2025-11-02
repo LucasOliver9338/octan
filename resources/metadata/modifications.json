@@ -1,0 +1,237 @@
+{
+  "seller": {
+    "catalog-items": {
+      "2022-04-01": [
+        {
+          "comment": "Remove required 'Pagination' and 'Refinements', see https://github.com/jlevers/selling-partner-api/issues/740",
+          "action": "replace",
+          "path": "components.schemas.ItemSearchResults.required",
+          "value": [
+            "items",
+            "numberOfResults"
+          ]
+        }
+      ]
+    },
+    "fba-inbound": {
+      "0": [
+        {
+          "comment": "Responses from Amazon have been missing one or more required Address parts",
+          "action": "delete",
+          "path": "components.schemas.Address.required"
+        },
+        {
+          "comment": "Responses from Amazon do not have the AreCasesRequired value",
+          "action": "replace",
+          "path": "components.schemas.InboundShipmentInfo.required",
+          "value": [
+            "ShipFromAddress"
+          ]
+        },
+        {
+            "comment": "Sometimes Amazon sends a PrepDetailsList with a single empty PrepDetails object (see https://github.com/jlevers/selling-partner-api/issues/845)",
+            "action": "delete",
+            "path": "components.schemas.PrepDetails.required"
+        }
+      ]
+    },
+    "fba-outbound": {
+      "2020-07-01": [
+        {
+          "comment": "Remove required 'sellerReturnReasonCode', see https://github.com/jlevers/selling-partner-api/issues/706",
+          "action": "replace",
+          "path": "components.schemas.ReturnItem.required",
+          "value": [
+            "amazonShipmentId",
+            "sellerFulfillmentOrderItemId",
+            "sellerReturnItemId",
+            "status",
+            "statusChangedDate"
+          ]
+        },
+        {
+            "comment": "Error Response from Amazon for GetFulfillmentOrder is an array",
+            "action": "replace",
+            "path": "components.schemas.GetFulfillmentOrderResponse.properties.errors",
+            "value": {
+                "type": "array",
+                "description": "A list of error responses returned when a request is unsuccessful.",
+                "items": {
+                    "$ref": "#/components/schemas/Error"
+                }
+            }
+        }
+      ]
+    },
+    "merchant-fulfillment": {
+      "0": [
+        {
+          "comment": "Remove required 'RequiresAdditionalSellerInputs', its not always present in response",
+          "action": "replace",
+          "path": "components.schemas.ShippingService.required",
+          "value": [
+            "CarrierName",
+            "Rate",
+            "ShipDate",
+            "ShippingServiceId",
+            "ShippingServiceName",
+            "ShippingServiceOfferId",
+            "ShippingServiceOptions"
+          ]
+        },
+        {
+            "comment": "Remove required 'CarrierWillPickUp', it is not always present in Amazon responses",
+            "action": "replace",
+            "path": "components.schemas.ShippingServiceOptions.required",
+            "value": ["DeliveryExperience"]
+        }
+      ]
+    },
+    "orders": {
+      "0": [
+        {
+          "action": "delete",
+          "path": "components.schemas.Address.required"
+        },
+        {
+          "action": "merge",
+          "path": "components.schemas.AutomatedShippingSettings.properties",
+          "value": {
+            "AutomatedShipMethodName": {
+              "type": "string",
+              "description": "The name of the automated shipping method."
+            },
+            "AutomatedCarrierName": {
+              "type": "string",
+              "description": "The name of the automated carrier."
+            }
+          }
+        },
+        {
+            "action": "merge",
+            "path": "components.schemas.OrdersList.properties",
+            "value": {
+                "BuyerEmail": {
+                    "type": "string",
+                    "description": "The anonymized email address of the buyer."
+                }
+            }
+        },
+        {
+            "action": "merge",
+            "path": "components.schemas.OrderBuyerInfo.properties",
+            "value": {
+                "BuyerEmail": {
+                    "type": "string",
+                    "description": "The anonymized email address of the buyer."
+                }
+            }
+        }
+      ]
+    },
+    "reports": {
+      "2021-06-30": [
+        {
+          "action": "merge",
+          "path": "paths./reports/2021-06-30/documents/{reportDocumentId}.get.parameters",
+          "value": [
+            {
+              "name": "reportType",
+              "in": "query",
+              "description": "The report type of the report document.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "shipping": {
+      "2": [
+        {
+          "comment": "Make the x-amzn-shipping-business-id header optional, because making it required would break backwards compatibility. This will be removed in the next major release.",
+          "action": "replace",
+          "path": "paths./shipping/v2/shipments/rates.post.parameters.1.required",
+          "value": false
+        },
+        {
+          "comment": "Make the x-amzn-shipping-business-id header optional, because making it required would break backwards compatibility. This will be removed in the next major release.",
+          "action": "replace",
+          "path": "paths./shipping/v2/shipments.post.parameters.1.required",
+          "value": false
+        },
+        {
+          "comment": "Make the x-amzn-shipping-business-id header optional, because making it required would break backwards compatibility. This will be removed in the next major release.",
+          "action": "replace",
+          "path": "paths./shipping/v2/oneClickShipment.post.parameters.1.required",
+          "value": false
+        },
+        {
+          "comment": "Make the x-amzn-shipping-business-id header optional, because making it required would break backwards compatibility. This will be removed in the next major release.",
+          "action": "replace",
+          "path": "paths./shipping/v2/shipments/{shipmentId}/documents.get.parameters.5.required",
+          "value": false
+        },
+        {
+          "comment": "Make the x-amzn-shipping-business-id header optional, because making it required would break backwards compatibility. This will be removed in the next major release.",
+          "action": "replace",
+          "path": "paths./shipping/v2/shipments/{shipmentId}/cancel.put.parameters.2.required",
+          "value": false
+        },
+        {
+          "comment": "Make the x-amzn-shipping-business-id header optional, because making it required would break backwards compatibility. This will be removed in the next major release.",
+          "action": "replace",
+          "path": "paths./shipping/v2/accessPoints.get.parameters.4.required",
+          "value": false
+        },
+        {
+            "comment": "Rename the PUT-based linkCarrierAccount operation to updateLinkedCarrierAccount, since there are two operations named linkCarrierAccount",
+            "action": "replace",
+            "path": "paths./shipping/v2/carrierAccounts/{carrierId}.put.operationId",
+            "value": "updateLinkedCarrierAccount"
+        },
+        {
+          "comment": "Add the undocumented amazonSellerId property to AmazonOrderDetails. Amazon accepts (and, for the 3PL Buy Shipping pilot, requires) this field so that a third-party logistics provider can buy shipping for an order belonging to a different seller than the one whose credentials are being used, but it is missing from the published model.",
+          "action": "merge",
+          "path": "components.schemas.AmazonOrderDetails.properties",
+          "value": {
+            "amazonSellerId": {
+              "type": "string",
+              "description": "The seller identifier of the Amazon seller that owns the order. Only needed when buying shipping on behalf of another seller (the 3PL Buy Shipping pilot); leave it unset to buy shipping for your own orders."
+            }
+          }
+        }
+      ]
+    },
+    "product-pricing": {
+      "0": [
+        {
+          "comment": "Error Response from Amazon for GetOffersResponse is an array",
+          "action": "replace",
+          "path": "components.schemas.ErrorList.type",
+          "value": "array"
+        },
+        {
+          "comment": "Error Response from Amazon for GetOffersResponse is an array",
+          "action": "replace",
+          "path": "components.schemas.ErrorList.items",
+          "value": {
+            "$ref": "#/components/schemas/Error"
+          }
+        },
+        {
+          "comment": "Remove unneeded objects from ErrorList",
+          "action": "delete",
+          "path": "components.schemas.ErrorList.properties"
+        },
+        {
+          "comment": "Remove unneeded objects from ErrorList",
+          "action": "delete",
+          "path": "components.schemas.ErrorList.required"
+        }
+      ]
+    }
+  }
+}

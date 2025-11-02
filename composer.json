@@ -1,0 +1,73 @@
+{
+    "name": "jlevers/selling-partner-api",
+    "description": "PHP client for Amazon's Selling Partner API",
+    "keywords": [
+        "api",
+        "selling-partner-api",
+        "amazon",
+        "ecommerce",
+        "sp-api",
+        "sdk",
+        "rest",
+        "api"
+    ],
+    "license": "BSD-3-Clause",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Jesse Evers",
+            "homepage": "https://jesseevers.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.2",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "guzzlehttp/guzzle": "^6.0|^7.0",
+        "saloonphp/saloon": "^4.0",
+        "openspout/openspout": "^4.23",
+        "illuminate/support": "^11.0|^12.0|^13.0"
+    },
+    "require-dev": {
+        "composer/semver": "^3.4",
+        "highsidelabs/saloon-sdk-generator": "^2.1.8",
+        "symfony/console": "^7.0",
+        "psy/psysh": "^0.12.0",
+        "voku/simple_html_dom": "^4.8",
+        "laravel/pint": "^1.13",
+        "phpcompatibility/php-compatibility": "dev-develop",
+        "phpunit/phpunit": "^11.2",
+        "fakerphp/faker": "^1.23"
+    },
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "SellingPartnerApi\\": "src/"
+        },
+        "files": [
+            "src/Generator/constants.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "SellingPartnerApi\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "lint": [
+            "@pint",
+            "@php-compatibility-check"
+        ],
+        "pint": "php vendor/bin/pint",
+        "php-compatibility-check": "./vendor/bin/phpcs -p ./src ./bin --standard=PHPCompatibility --runtime-set testVersion 8.2-",
+        "post-install-cmd": "\"vendor/bin/phpcs\" --config-set installed_paths vendor/phpcompatibility/php-compatibility",
+        "post-update-cmd": "\"vendor/bin/phpcs\" --config-set installed_paths vendor/phpcompatibility/php-compatibility",
+        "test": "vendor/bin/phpunit"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
+}
